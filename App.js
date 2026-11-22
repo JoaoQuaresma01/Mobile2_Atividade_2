@@ -89,6 +89,11 @@ export default function App() {
     const valorPreco = parseFloat(preco.replace(',', '.'));
     const valorAno = parseInt(ano, 10);
 
+    if (isNaN(valorPreco) || isNaN(valorAno)) {
+      Alert.alert('Aviso', 'Preço e Ano devem ser números válidos.');
+      return;
+    }
+
     const dados = {
       titulo: titulo.trim(),
       autor: autor.trim(),
@@ -108,7 +113,7 @@ export default function App() {
     }
 
     limparFormulario();
-    await carregarPagina(db, paginaAtual);
+    await carregarPagina(db, idLivroEdicao ? paginaAtual : 1);
   }
 
   // [ANA LAURA] Ações de Editar e Excluir
