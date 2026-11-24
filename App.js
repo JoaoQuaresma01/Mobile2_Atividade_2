@@ -21,7 +21,8 @@ import {
   countLivros,
   updateLivro,
   deleteLivro,
-  popularLivrosIniciais
+  popularLivrosIniciais,
+  exportarBancoParaProjeto
 } from './Banco/Config';
 
 const ITENS_POR_PAGINA = 3;
@@ -155,6 +156,13 @@ export default function App() {
     await carregarPagina(db, 1);
   }
 
+  // Sincronizar com SQLite Viewer
+  async function handleSincronizarSQLite() {
+    if (!db) return;
+    const res = await exportarBancoParaProjeto(db);
+    Alert.alert('SQLite Viewer', res.mensagem);
+  }
+
   const totalPaginas = Math.ceil(totalRegistros / ITENS_POR_PAGINA) || 1;
 
   return (
@@ -177,6 +185,11 @@ export default function App() {
             activeOpacity={0.7}
           >
             <Text style={styles.seedText}>⚡ Inserir 10 Livros de Exemplo</Text>
+          </TouchableOpacity>
+
+          {/* Sincronização SQLite Viewer */}
+          <TouchableOpacity style={styles.syncButton} onPress={handleSincronizarSQLite}>
+            <Text style={styles.syncText}>💾 Sincronizar Banco com VS Code (SQLite Viewer)</Text>
           </TouchableOpacity>
 
           {/* Formulário */}
@@ -299,6 +312,16 @@ const styles = StyleSheet.create({
     fontSize: 14,
     letterSpacing: 0.3,
   },
+  syncButton: {
+    backgroundColor: '#064e3b',
+    paddingVertical: 10,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginBottom: 16,
+    borderWidth: 1,
+    borderColor: '#34d399'
+  },
+  syncText: { color: '#34d399', fontWeight: 'bold', fontSize: 13 },
   cardForm: {
     backgroundColor: '#1e293b',
     borderRadius: 12,
