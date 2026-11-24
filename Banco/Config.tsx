@@ -86,3 +86,52 @@ export async function popularLivrosIniciais(db: SQLite.SQLiteDatabase) {
     }
     return { mensagem: '10 livros cadastrados com sucesso!' };
 }
+
+// ==========================================
+// EXPORTAÇÃO E SINCRONIZAÇÃO COM SQLITE VIEWER
+// ==========================================
+export async function exportarBancoParaProjeto(db: SQLite.SQLiteDatabase): Promise<{ sucesso: boolean; mensagem: string }> {
+    try {
+        const bytes = await db.serializeAsync();
+
+        let host = 'localhost';
+        if (typeof window !== 'undefined' && window.location?.hostname) {
+            host = window.location.hostname;
+        } else {
+            try {
+                const { NativeModules } = require('react-native');
+                const scriptURL = NativeModules?.SourceCode?.scriptURL;
+                if (scriptURL) {
+                    const m = scriptURL.match(/^https?:\/\/([^/:]+)/);
+                    if (m) host = m[1];
+                }
+            } catch {}
+        }
+
+        const url = `http://${host}:8081/api/save-db`;
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/octet-stream',
+            },
+            body: bytes,
+        });
+
+        if (response.ok) {
+            return {
+                sucesso: true,
+                mensagem: 'Banco sincronizado com sucesso com LivrariaApp.db no projeto! Abra o arquivo no VS Code para ver via SQLite Viewer.'
+            };
+        } else {
+            return {
+                sucesso: false,
+                mensagem: `Servidor retornou status ${response.status}.`
+            };
+        }
+    } catch (err: any) {
+        return {
+            sucesso: false,
+            mensagem: `Erro ao exportar banco: ${err.message}`
+        };
+    }
+}

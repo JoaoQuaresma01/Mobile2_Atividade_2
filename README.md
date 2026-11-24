@@ -58,7 +58,40 @@ Os dados permanecem **100% salvos e persistidos**. Graças à cláusula `CREATE 
 ### 4. Como visualizar o que está gravado no banco?
 * **Pela própria interface do aplicativo:** A tela com paginação reflete em tempo real o estado exato da tabela.
 * **Pelo Terminal do Expo:** Consultas via `console.log` exibem os objetos formatados no terminal de desenvolvimento.
-* **Por visualizadores gráficos externos:** O arquivo `.db` pode ser extraído do dispositivo e aberto em ferramentas como o [DB Browser for SQLite](https://sqlitebrowser.org/) ou a extensão *SQLite Viewer* do VS Code.
+* **Por visualizadores gráficos externos:** O arquivo `.db` pode ser visualizado diretamente no VS Code com a extensão **SQLite Viewer** (veja a seção detalhada abaixo).
+
+---
+
+## 🔍 Como Visualizar o Banco SQLite no VS Code (SQLite Viewer)
+
+Para inspecionar o arquivo SQLite com interface gráfica diretamente dentro do VS Code, siga os passos abaixo:
+
+### 1. Instalar a Extensão no VS Code
+1. Abra a aba de extensões no VS Code (`Ctrl + Shift + X`).
+2. Pesquise por **SQLite Viewer** (por *Florian Klampfl* ou *qwtel*).
+3. Clique em **Install**.
+
+### 2. Gerar ou Sincronizar o Arquivo `LivrariaApp.db`
+
+Você tem **duas formas** fáceis de ter o banco de dados na raiz do projeto:
+
+* **Opção A — Pelo Script Local (Mais rápido, não precisa de celular/emulador ligado):**
+  Execute no terminal:
+  ```bash
+  npm run exportar-banco
+  ```
+  Isso cria instantaneamente o arquivo `LivrariaApp.db` na raiz com a tabela `LIVRO` e os 10 livros cadastrados.
+
+* **Opção B — Pelo Próprio Aplicativo Aberto no Celular/Emulador:**
+  No aplicativo em execução, clique no botão verde:
+  ```text
+  💾 Sincronizar Banco com VS Code (SQLite Viewer)
+  ```
+  O app serializará os dados do dispositivo e salvará diretamente no arquivo `LivrariaApp.db` na raiz do projeto.
+
+### 3. Abrir e Visualizar no VS Code
+* No explorador de arquivos do VS Code, clique no arquivo **`LivrariaApp.db`**.
+* A interface visual do **SQLite Viewer** será aberta na aba do editor, exibindo a tabela `LIVRO` com todas as colunas (`id`, `titulo`, `autor`, `genero`, `preco`, `ano`) e os registros em formato de planilha interativa!
 
 ---
 

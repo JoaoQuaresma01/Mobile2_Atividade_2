@@ -4,6 +4,7 @@
   "main": "index.js",
   "scripts": {
     "postinstall": "node patch-metro.js",
+    "exportar-banco": "node scripts/exportar-banco.js",
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
