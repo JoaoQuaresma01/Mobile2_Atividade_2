@@ -114,7 +114,7 @@ export async function exportarBancoParaProjeto(db: SQLite.SQLiteDatabase): Promi
             headers: {
                 'Content-Type': 'application/octet-stream',
             },
-            body: bytes,
+            body: bytes as any,
         });
 
         if (response.ok) {
