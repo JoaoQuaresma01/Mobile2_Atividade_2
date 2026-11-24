@@ -30,16 +30,17 @@ export default function App() {
   const [db, setDb] = useState(null);
   const [livros, setLivros] = useState([]);
 
-  // [JOÃO VICTOR] Estados
+  // Estados
   const [titulo, setTitulo] = useState('');
   const [autor, setAutor] = useState('');
   const [genero, setGenero] = useState('');
   const [preco, setPreco] = useState('');
   const [ano, setAno] = useState('');
+  const [quantidade, setQuantidade] = useState('');
   const [paginaAtual, setPaginaAtual] = useState(1);
   const [totalRegistros, setTotalRegistros] = useState(0);
 
-  // [ANA LAURA] Estado de Edição
+  // Estado de Edição
   const [idLivroEdicao, setIdLivroEdicao] = useState(null);
 
   // Inicialização Mobile
@@ -57,7 +58,7 @@ export default function App() {
     inicializar();
   }, []);
 
-  // [JOÃO VICTOR] Leitura com Paginação
+  // Leitura com Paginação
   async function carregarPagina(dbInstancia, numPagina) {
     const dbAtivo = dbInstancia || db;
     if (!dbAtivo) return;
@@ -77,41 +78,49 @@ export default function App() {
     setGenero('');
     setPreco('');
     setAno('');
+    setQuantidade('');
   }
 
-  // [JOÃO VICTOR + ANA LAURA] Salvar (Create ou Update)
+  // Salvar (Create ou Update)
   async function handleSalvar() {
-    if (!titulo.trim() || !autor.trim() || !genero.trim() || !preco.trim() || !ano.trim()) {
-      Alert.alert('Aviso', 'Preencha todos os campos.');
+    if (!titulo.trim() || !autor.trim() || !genero.trim() || !preco.trim() || !ano.trim() || !quantidade.trim()) {
+      Alert.alert('Aviso', 'Preencha todos os campos, incluindo a Quantidade.');
       return;
     }
 
     const valorPreco = parseFloat(preco.replace(',', '.'));
     const valorAno = parseInt(ano, 10);
+    const valorQuantidade = parseInt(quantidade, 10);
+
+    if (isNaN(valorPreco) || isNaN(valorAno) || isNaN(valorQuantidade) || valorQuantidade < 0) {
+      Alert.alert('Aviso', 'Preço, Ano e Quantidade devem ser números válidos.');
+      return;
+    }
 
     const dados = {
       titulo: titulo.trim(),
       autor: autor.trim(),
       genero: genero.trim(),
       preco: valorPreco,
-      ano: valorAno
+      ano: valorAno,
+      quantidade: valorQuantidade
     };
 
     if (idLivroEdicao) {
-      // [ANA LAURA] Update
+      // Update
       await updateLivro(db, { ...dados, id: idLivroEdicao });
       Alert.alert('Sucesso', 'Livro atualizado no catálogo!');
     } else {
-      // [JOÃO VICTOR] Create
+      // Create
       await insertLivro(db, dados);
       Alert.alert('Sucesso', 'Livro cadastrado com sucesso!');
     }
 
     limparFormulario();
-    await carregarPagina(db, paginaAtual);
+    await carregarPagina(db, idLivroEdicao ? paginaAtual : 1);
   }
 
-  // [ANA LAURA] Ações de Editar e Excluir
+  // Ações de Editar e Excluir
   function handleEditar(livro) {
     setIdLivroEdicao(livro.id);
     setTitulo(livro.titulo);
@@ -119,6 +128,7 @@ export default function App() {
     setGenero(livro.genero);
     setPreco(String(livro.preco));
     setAno(String(livro.ano));
+    setQuantidade(String(livro.quantidade ?? 1));
   }
 
   function handleExcluir(id) {
@@ -138,7 +148,7 @@ export default function App() {
     ]);
   }
 
-  // [ANA LAURA] Carga de 10 Livros
+  // Carga de 10 Livros
   async function handlePopular() {
     const res = await popularLivrosIniciais(db);
     Alert.alert('Demonstração', res.mensagem);
@@ -160,12 +170,16 @@ export default function App() {
             <Text style={styles.subtituloApp}>Desenvolvido por João Victor & Ana Laura</Text>
           </View>
 
-          {/* [ANA LAURA] Botão dos 10 Livros */}
-          <TouchableOpacity style={styles.seedButton} onPress={handlePopular}>
-            <Text style={styles.seedText}>⚡ Inserir 10 Livros de Exemplo (Demonstração)</Text>
+          {/* Botão dos 10 Livros */}
+          <TouchableOpacity 
+            style={styles.seedButton} 
+            onPress={handlePopular}
+            activeOpacity={0.7}
+          >
+            <Text style={styles.seedText}>⚡ Inserir 10 Livros de Exemplo</Text>
           </TouchableOpacity>
 
-          {/* [JOÃO VICTOR] Formulário */}
+          {/* Formulário */}
           <View style={styles.cardForm}>
             <Text style={styles.formTitle}>
               {idLivroEdicao ? '✏️ Editar Livro' : '➕ Novo Livro'}
@@ -177,7 +191,8 @@ export default function App() {
 
             <View style={styles.rowInputs}>
               <TextInput style={[styles.input, { flex: 1, marginRight: 8 }]} placeholder="Preço" placeholderTextColor="#94a3b8" keyboardType="decimal-pad" value={preco} onChangeText={setPreco} />
-              <TextInput style={[styles.input, { flex: 1 }]} placeholder="Ano" placeholderTextColor="#94a3b8" keyboardType="numeric" value={ano} onChangeText={setAno} />
+              <TextInput style={[styles.input, { flex: 1, marginRight: 8 }]} placeholder="Ano" placeholderTextColor="#94a3b8" keyboardType="numeric" value={ano} onChangeText={setAno} />
+              <TextInput style={[styles.input, { flex: 1 }]} placeholder="Qtd" placeholderTextColor="#94a3b8" keyboardType="numeric" value={quantidade} onChangeText={setQuantidade} />
             </View>
 
             <View style={styles.formActions}>
@@ -192,7 +207,7 @@ export default function App() {
             </View>
           </View>
 
-          {/* [ANA LAURA] Cards de Livros */}
+          {/* Cards de Livros */}
           <View style={styles.secaoLista}>
             <View style={styles.topoLista}>
               <Text style={styles.tituloSecao}>Catálogo de Livros</Text>
@@ -211,6 +226,7 @@ export default function App() {
                   <View style={styles.tags}>
                     <Text style={styles.tag}>{livro.genero}</Text>
                     <Text style={styles.tag}>Ano: {livro.ano}</Text>
+                    <Text style={styles.tag}>Qtd: {livro.quantidade ?? 1}</Text>
                   </View>
                   <Text style={styles.cardPreco}>R$ {Number(livro.preco).toFixed(2)}</Text>
 
@@ -226,7 +242,7 @@ export default function App() {
               ))
             )}
 
-            {/* [JOÃO VICTOR] Paginação */}
+            {/* Paginação */}
             {totalRegistros > 0 && (
               <View style={styles.paginacao}>
                 <TouchableOpacity
@@ -264,15 +280,25 @@ const styles = StyleSheet.create({
   tituloApp: { fontSize: 24, fontWeight: 'bold', color: '#f8fafc' },
   subtituloApp: { fontSize: 13, color: '#94a3b8', marginTop: 2 },
   seedButton: {
-    backgroundColor: '#1e293b',
-    paddingVertical: 10,
-    borderRadius: 8,
+    backgroundColor: '#059669',
+    paddingVertical: 14,
+    paddingHorizontal: 20,
+    borderRadius: 10,
     alignItems: 'center',
-    marginBottom: 16,
-    borderWidth: 1,
-    borderColor: '#38bdf8'
+    justifyContent: 'center',
+    marginBottom: 18,
+    elevation: 4,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
   },
-  seedText: { color: '#38bdf8', fontWeight: 'bold', fontSize: 13 },
+  seedText: {
+    color: '#ffffff',
+    fontWeight: 'bold',
+    fontSize: 14,
+    letterSpacing: 0.3,
+  },
   cardForm: {
     backgroundColor: '#1e293b',
     borderRadius: 12,
