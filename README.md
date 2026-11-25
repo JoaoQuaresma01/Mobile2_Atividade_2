@@ -20,7 +20,7 @@ O projeto foi planejado e desenvolvido em conjunto por **João Victor** e **Ana 
   * Estruturação visual com tema escuro profissional (*Dark Theme*).
   * Cabeçalho temático da Livraria.
   * Formulário de cadastro de livros com validação de campos obrigatórios e sanitização de dados numéricos.
-  * Configuração de teclados nativos para dispositivos móveis (`decimal-pad` para o preço e `numeric` para o ano de publicação).
+  * Configuração de teclados nativos para dispositivos móveis (`decimal-pad` para o preço e `numeric` para o ano de publicação e quantidade em estoque).
   * Controles de paginação nativos (**◀ Anterior** e **Próxima ▶**) com bloqueio automático na primeira e na última página, além de indicador visual da página atual.
 
 ---
@@ -31,8 +31,8 @@ O projeto foi planejado e desenvolvido em conjunto por **João Victor** e **Ana 
   * `deleteLivro`: Remoção física de registro no celular via `DELETE FROM LIVRO WHERE id = ?`.
   * `popularLivrosIniciais`: Carga automática (*Seed*) contendo 10 obras clássicas da literatura mundial, com trava de segurança para não duplicar dados caso o catálogo já possua 10 ou mais registros.
 * **Frontend e Interface (UI/UX):**
-  * Cartões estilizados (*Cards*) para exibição de cada livro com tipografia destacada, preço formatado em Real (`R$`) e etiquetas coloridas (*Badges*) para gênero literário e ano.
-  * Botão de demonstração no topo da tela: `⚡ Inserir 10 Livros de Exemplo (Demonstração)` para carga com apenas 1 clique durante a apresentação.
+  * Cartões estilizados (*Cards*) para exibição de cada livro com tipografia destacada, preço formatado em Real (`R$`) e etiquetas coloridas (*Badges*) para gênero literário, ano e quantidade em estoque.
+  * Botão de demonstração no topo da tela: **`⚡ Inserir 10 Livros de Exemplo`** para carga com apenas 1 clique durante a apresentação.
   * Fluxo de edição interativo: botão **Editar** em cada cartão que preenche os campos do formulário automaticamente, altera o botão principal para *"Atualizar Livro"* e exibe o botão *"Cancelar"*.
   * Exclusão segura: botão **Excluir** integrado ao diálogo nativo do sistema operacional (`Alert.alert`), exigindo confirmação do usuário antes de deletar fisicamente o registro.
 
@@ -75,23 +75,16 @@ Para inspecionar o arquivo SQLite com interface gráfica diretamente dentro do V
 
 Você tem **duas formas** fáceis de ter o banco de dados na raiz do projeto:
 
-* **Opção A — Pelo Script Local (Mais rápido, não precisa de celular/emulador ligado):**
+* **Opção B — Pelo Script Local (Mais rápido, não precisa de celular/emulador ligado):**
   Execute no terminal:
   ```bash
   npm run exportar-banco
   ```
   Isso cria instantaneamente o arquivo `LivrariaApp.db` na raiz com a tabela `LIVRO` e os 10 livros cadastrados.
 
-* **Opção B — Pelo Próprio Aplicativo Aberto no Celular/Emulador:**
-  No aplicativo em execução, clique no botão verde:
-  ```text
-  💾 Sincronizar Banco com VS Code (SQLite Viewer)
-  ```
-  O app serializará os dados do dispositivo e salvará diretamente no arquivo `LivrariaApp.db` na raiz do projeto.
-
 ### 3. Abrir e Visualizar no VS Code
 * No explorador de arquivos do VS Code, clique no arquivo **`LivrariaApp.db`**.
-* A interface visual do **SQLite Viewer** será aberta na aba do editor, exibindo a tabela `LIVRO` com todas as colunas (`id`, `titulo`, `autor`, `genero`, `preco`, `ano`) e os registros em formato de planilha interativa!
+* A interface visual do **SQLite Viewer** será aberta na aba do editor, exibindo a tabela `LIVRO` com todas as colunas (`id`, `titulo`, `autor`, `genero`, `preco`, `ano`, `quantidade`) e os registros em formato de planilha interativa!
 
 ---
 
@@ -164,7 +157,7 @@ npx expo start -c
 Para testar todas as funcionalidades exigidas na atividade durante a apresentação, siga este roteiro:
 
 1. **Carga Inicial dos 10 Livros (Requisito Obrigatório):**
-   * Ao abrir o app, clique no botão superior **"⚡ Inserir 10 Livros de Exemplo (Demonstração)"**.
+   * Ao abrir o app, clique no botão superior **"⚡ Inserir 10 Livros de Exemplo"**.
    * Uma mensagem de sucesso confirmará o cadastro das 10 obras clássicas.
    * Clique novamente no botão para verificar a trava de segurança que impede duplicação.
 2. **Navegação com Paginação (LIMIT 3 e OFFSET):**
@@ -172,7 +165,7 @@ Para testar todas as funcionalidades exigidas na atividade durante a apresentaç
    * Utilize o botão **Próxima ▶** para navegar entre as páginas 1, 2, 3 e 4.
    * Note que o botão **◀ Anterior** fica desabilitado na primeira página e o botão **Próxima ▶** é desativado na última página.
 3. **Cadastro de Novo Livro (CREATE):**
-   * Preencha os campos (Título, Autor, Gênero, Preço e Ano) e clique em **"Salvar no Catálogo"**.
+   * Preencha os campos (Título, Autor, Gênero, Preço, Ano e Quantidade) e clique em **"Salvar no Catálogo"**.
    * O livro será inserido via SQLite e o app retornará à página 1 exibindo o novo registro no topo.
    * Tente salvar com campos vazios ou letras no preço/ano para conferir as validações de entrada.
 4. **Edição de Livro (UPDATE):**
