@@ -16,7 +16,8 @@ db.exec(`
     autor TEXT NOT NULL,
     genero TEXT NOT NULL,
     preco REAL NOT NULL,
-    ano INTEGER NOT NULL
+    ano INTEGER NOT NULL,
+    quantidade INTEGER NOT NULL DEFAULT 1
   );
 `);
 
@@ -26,21 +27,21 @@ const { total } = countStmt.get();
 
 if (total === 0) {
   const insertStmt = db.prepare(`
-    INSERT INTO LIVRO (titulo, autor, genero, preco, ano)
-    VALUES (?, ?, ?, ?, ?)
+    INSERT INTO LIVRO (titulo, autor, genero, preco, ano, quantidade)
+    VALUES (?, ?, ?, ?, ?, ?)
   `);
 
   const livrosIniciais = [
-    ['Dom Casmurro', 'Machado de Assis', 'Romance', 39.9, 1899],
-    ['O Hobbit', 'J.R.R. Tolkien', 'Fantasia', 59.9, 1937],
-    ['1984', 'George Orwell', 'Ficção Científica', 44.5, 1949],
-    ['A Revolução dos Bichos', 'George Orwell', 'Sátira', 29.9, 1945],
-    ['O Alquimista', 'Paulo Coelho', 'Ficção', 35.0, 1988],
-    ['Clean Code', 'Robert C. Martin', 'Tecnologia', 89.9, 2008],
-    ['O Pequeno Príncipe', 'Antoine de Saint-Exupéry', 'Infantil', 25.0, 1943],
-    ['Cem Anos de Solidão', 'Gabriel García Márquez', 'Realismo', 62.0, 1967],
-    ['A Metamorfose', 'Franz Kafka', 'Clássico', 22.9, 1915],
-    ['Sapiens', 'Yuval Noah Harari', 'História', 69.9, 2011]
+    ['Dom Casmurro', 'Machado de Assis', 'Romance', 39.9, 1899, 5],
+    ['O Hobbit', 'J.R.R. Tolkien', 'Fantasia', 59.9, 1937, 8],
+    ['1984', 'George Orwell', 'Ficção Científica', 44.5, 1949, 12],
+    ['A Revolução dos Bichos', 'George Orwell', 'Sátira', 29.9, 1945, 7],
+    ['O Alquimista', 'Paulo Coelho', 'Ficção', 35.0, 1988, 10],
+    ['Clean Code', 'Robert C. Martin', 'Tecnologia', 89.9, 2008, 4],
+    ['O Pequeno Príncipe', 'Antoine de Saint-Exupéry', 'Infantil', 25.0, 1943, 15],
+    ['Cem Anos de Solidão', 'Gabriel García Márquez', 'Realismo', 62.0, 1967, 6],
+    ['A Metamorfose', 'Franz Kafka', 'Clássico', 22.9, 1915, 9],
+    ['Sapiens', 'Yuval Noah Harari', 'História', 69.9, 2011, 11]
   ];
 
   for (const livro of livrosIniciais) {
